@@ -24,6 +24,7 @@ model CodingPaper {
   measuringOutcomes            MeasuringOutcome[]
   timeMeasurementMethods       TemporalMeasurementMethod[]
   subjectiveMeasurementMethods SubjectiveMeasurementMethod[]
+  codingExperimentSupport      CodingExperimentSupport[]
   createdAt                    DateTime                      @default(now()) @db.Timestamp(6)
   updatedAt                    DateTime                      @updatedAt
 }
@@ -68,6 +69,12 @@ model TemporalMeasurementMethod {
 }
 
 model SubjectiveMeasurementMethod {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model CodingExperimentSupport {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(255)
   codingPaper CodingPaper[]

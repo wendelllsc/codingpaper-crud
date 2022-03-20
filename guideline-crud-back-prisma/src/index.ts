@@ -12,7 +12,7 @@ var router = express.Router();
 // Create/Edit codingPaper
 router.post(`/codingpaper`, async (req, res) => {
   console.log(req.body)
-  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , recruitingStrategies, tagsCharacterization, experimentalSetting } = req.body
+  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , recruitingStrategies, tagsCharacterization, experimentalSetting } = req.body
  
   const guidelineData = guidelines?.map((method:any) => {
     return {  id : method.id};
@@ -38,6 +38,10 @@ router.post(`/codingpaper`, async (req, res) => {
   })
 
   const subjectiveMeasurementMethodData = subjectiveMeasurementMethods?.map((method:any) => {
+    return {  id : method.id};
+  })
+
+  const codingExperimentSupportData = codingExperimentSupport?.map((method:any) => {
     return {  id : method.id};
   })
   const sampleSize = parseInt(req.body.sampleSize);
@@ -69,6 +73,9 @@ try{
       },
       subjectiveMeasurementMethods: {
         connect: subjectiveMeasurementMethodData
+      },
+      codingExperimentSupport: {
+        connect: codingExperimentSupportData
       },
       sampleTags: {
         create: tagsCharacterizationData
@@ -121,6 +128,11 @@ router.get('/timeMeasurementMethods', async (req, res) => {
 router.get('/subjectiveMeasurementMethods', async (req, res) => {
   const subjectiveMeasurementMethodD = await prisma.subjectiveMeasurementMethod.findMany()
   res.json(subjectiveMeasurementMethodD)
+})
+
+router.get('/codingExperimentSupports', async (req, res) => {
+  const codingExperimentSupports = await prisma.codingExperimentSupport.findMany()
+  res.json(codingExperimentSupports)
 })
 
 

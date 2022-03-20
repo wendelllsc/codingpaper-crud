@@ -23,11 +23,16 @@ const getAllSubjectiveMeasurementMethods = () => {
   return http.get("/subjectiveMeasurementMethods");
 };
 
+const getAllCodingExperimentSupports = () => {
+  return http.get("/codingExperimentSupports");
+};
+
 export default {
   getAllGuidelines,
   getAllRecruitingStrategies,
   getAllDesignTypes,
   getAllMeasuringOutcomes,
   getAllTimeMeasurementMethods,
-  getAllSubjectiveMeasurementMethods
+  getAllSubjectiveMeasurementMethods,
+  getAllCodingExperimentSupports
 };

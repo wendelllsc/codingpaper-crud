@@ -21,7 +21,8 @@ const AddCodingPaper = () => {
     experimentalSetting:"",
     measuringOutcomes:[],
     timeMeasurementMethods:[],
-    subjectiveMeasurementMethods:[]
+    subjectiveMeasurementMethods:[],
+    codingExperimentSupport:[]
   
     // Ver como pega o relacionado
   };
@@ -36,6 +37,8 @@ const AddCodingPaper = () => {
   const [optionsMeasuringOutcomes, setMeasuringOutcomes] = useState([]);
   const [optionsTimeMeasurementMethods, setOptionsTimeMeasurementMethods] = useState([]);
   const [optionsSubjectiveMeasurementMethods, setSubjectiveMeasurementMethods] = useState([]);
+  const [optionsCodingExperimentSupport, setCodingExperimentSupport] = useState([]);
+
 
 
 
@@ -46,6 +49,7 @@ const AddCodingPaper = () => {
     retrieveMeasuringOutcomes();
     retrieveTimeMeasurementMethods();
     retrieveSubjectiveMeasurementMethods();
+    retrieveCodingExperimentSupports();
   }, []);
 
   const retrieveGuidelines = () => {
@@ -114,6 +118,18 @@ const AddCodingPaper = () => {
         var optionsMeasuringOutcomesFormatado = []
         response.data.forEach((x, i) => optionsMeasuringOutcomesFormatado.push({ value: x.id, label: x.name }) );
         setMeasuringOutcomes(optionsMeasuringOutcomesFormatado)
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const retrieveCodingExperimentSupports = () => {
+    FetchService.getAllCodingExperimentSupports()
+      .then((response) => {
+        var optionsCodingExperimentSupportsFormatado = []
+        response.data.forEach((x, i) => optionsCodingExperimentSupportsFormatado.push({ value: x.id, label: x.name }) );
+        setCodingExperimentSupport(optionsCodingExperimentSupportsFormatado)
       })
       .catch((e) => {
         console.log(e);
@@ -197,6 +213,12 @@ const AddCodingPaper = () => {
     setCodingPaper({ ...codingPaper, ["subjectiveMeasurementMethods"]: timeMeasurementMethodFormatado });
   };
 
+  const handleSelectCodingExperimentSupport = event => {
+    var codingExperimentSupportFormatado = []
+    event.forEach((x, i) => codingExperimentSupportFormatado.push( { id: x.value , name: x.label}) );
+    setCodingPaper({ ...codingPaper, ["codingExperimentSupport"]: codingExperimentSupportFormatado });
+  };
+
 
 
   const saveCodingPaper = () => {
@@ -213,9 +235,11 @@ const AddCodingPaper = () => {
       experimentalSetting:codingPaper.experimentalSetting,
       measuringOutcomes:codingPaper.measuringOutcomes,
       timeMeasurementMethods:codingPaper.timeMeasurementMethods,
-      subjectiveMeasurementMethods:codingPaper.subjectiveMeasurementMethods
+      subjectiveMeasurementMethods:codingPaper.subjectiveMeasurementMethods,
+      codingExperimentSupport:codingPaper.codingExperimentSupport
+
     };
-    return
+    console.log(data)
     CodingPaperService.create(data)
       .then(response => {
         setCodingPaper({
@@ -230,7 +254,10 @@ const AddCodingPaper = () => {
           hasProfessionals:response.data.hasProfessionals,
           taskDuration:response.data.taskDuration,
           experimentalSetting:response.data.experimentalSetting,
-          measuringOutcomes:codingPaper.data.measuringOutcomes,
+          measuringOutcomes:response.data.measuringOutcomes,
+          timeMeasurementMethods:response.data.timeMeasurementMethods,
+          subjectiveMeasurementMethods:response.data.subjectiveMeasurementMethods,
+          codingExperimentSupport:response.data.codingExperimentSupport
         });
         console.log(response)
         setSubmitted(true);
@@ -434,6 +461,18 @@ const AddCodingPaper = () => {
                     />
                   </div>
               }
+              <div className="col-md-4">
+                  <label htmlFor="recruitingStrategy">Coding Experiment Support</label>
+                  <Select
+                    className=""
+                    isMulti
+                    id="codingExperimentSupport"
+                    required
+                    options={optionsCodingExperimentSupport}
+                    onChange={handleSelectCodingExperimentSupport}
+                    name="codingExperimentSupport"
+                  />
+                </div>
 
               <button onClick={saveCodingPaper} className="btn btn-success mt-3">
                 Submit

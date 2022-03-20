@@ -113,6 +113,28 @@ const measuringOutcomesData: Prisma.MeasuringOutcomeCreateInput[] = [
   
 ]
 
+const codingExperimentSupportData: Prisma.CodingExperimentSupportCreateInput[] = [
+  {
+    name: 'Specific software tools'
+  },
+  {
+    name: 'Integrated Development Environment (IDE)'
+  },
+  {
+    name: 'Integrated with Solution'
+  },
+  {
+    name: 'Virtual operating system'
+  },
+  {
+    name: 'Screen-Recorder'
+  },
+  {
+    name: 'Tool to support SE experiments'
+  }
+  
+]
+
 async function main() {
   console.log(`Start seeding ...`)
 
@@ -153,6 +175,20 @@ async function main() {
 
   for (const u of subjectiveMeasurementMethodData) {
     const subjectiveMeasurementMethodData = await prisma.subjectiveMeasurementMethod.create({
+      data: u,
+    })
+    console.log(`Created designType with id: ${subjectiveMeasurementMethodData.id}`)
+  }
+
+  for (const u of subjectiveMeasurementMethodData) {
+    const subjectiveMeasurementMethodData = await prisma.subjectiveMeasurementMethod.create({
+      data: u,
+    })
+    console.log(`Created designType with id: ${subjectiveMeasurementMethodData.id}`)
+  }
+
+  for (const u of codingExperimentSupportData) {
+    const subjectiveMeasurementMethodData = await prisma.codingExperimentSupport.create({
       data: u,
     })
     console.log(`Created designType with id: ${subjectiveMeasurementMethodData.id}`)

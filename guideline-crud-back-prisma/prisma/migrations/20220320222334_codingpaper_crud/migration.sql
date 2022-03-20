@@ -74,6 +74,14 @@ CREATE TABLE `SubjectiveMeasurementMethod` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `CodingExperimentSupport` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `_CodingPaperToGuideline` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
@@ -136,6 +144,15 @@ CREATE TABLE `_CodingPaperToSubjectiveMeasurementMethod` (
     INDEX `_CodingPaperToSubjectiveMeasurementMethod_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `_CodingExperimentSupportToCodingPaper` (
+    `A` INTEGER NOT NULL,
+    `B` INTEGER NOT NULL,
+
+    UNIQUE INDEX `_CodingExperimentSupportToCodingPaper_AB_unique`(`A`, `B`),
+    INDEX `_CodingExperimentSupportToCodingPaper_B_index`(`B`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `_CodingPaperToGuideline` ADD FOREIGN KEY (`A`) REFERENCES `CodingPaper`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -177,3 +194,9 @@ ALTER TABLE `_CodingPaperToSubjectiveMeasurementMethod` ADD FOREIGN KEY (`A`) RE
 
 -- AddForeignKey
 ALTER TABLE `_CodingPaperToSubjectiveMeasurementMethod` ADD FOREIGN KEY (`B`) REFERENCES `SubjectiveMeasurementMethod`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_CodingExperimentSupportToCodingPaper` ADD FOREIGN KEY (`A`) REFERENCES `CodingExperimentSupport`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_CodingExperimentSupportToCodingPaper` ADD FOREIGN KEY (`B`) REFERENCES `CodingPaper`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
