@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//npx prisma generate dev
+model CodingPaper {
+  id                           Int                           @id @default(autoincrement())
+  title                        String                        @db.VarChar(255)
+  description                  String                        @db.VarChar(255)
+  guidelines                   Guideline[]
+  sampleSize                   Int?
+  sampleRecruitments           RecruitingStrategy[]
+  sampleTags                   SampleCharacterization[]
+  hasStudents                  Boolean                       @default(false)
+  hasProfessionals             Boolean                       @default(false)
+  designTypes                  DesignType[]
+  taskDuration                 Int?
+  experimentalSetting          String                        @db.VarChar(255)
+  measuringOutcomes            MeasuringOutcome[]
+  timeMeasurementMethods       TemporalMeasurementMethod[]
+  subjectiveMeasurementMethods SubjectiveMeasurementMethod[]
+  createdAt                    DateTime                      @default(now()) @db.Timestamp(6)
+  updatedAt                    DateTime                      @updatedAt
+}
+
+model Guideline {
+  id          Int           @id @default(autoincrement())
+  title       String        @db.VarChar(255)
+  author      String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model RecruitingStrategy {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model SampleCharacterization {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime      @updatedAt
+}
+
+model DesignType {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model MeasuringOutcome {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model TemporalMeasurementMethod {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model SubjectiveMeasurementMethod {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}

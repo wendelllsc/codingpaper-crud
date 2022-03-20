@@ -1,0 +1,22 @@
+.list {
+  text-align: left;
+  max-width: 750px;
+  margin: auto;
+}
+
+.checkbox-container{
+  display:flex;
+  align-items: center;
+}
+.linha-pos-titulo{
+  margin-top: 0.5em;
+  margin-bottom: 1.5em;
+}
+/* .submit-form {
+  max-width: 450px;
+  margin: auto;
+}
+.edit-form {
+  max-width: 450px;
+  margin: auto;
+} */
