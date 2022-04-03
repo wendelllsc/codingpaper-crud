@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import GuidelineService from "../services/CodingPaperService";
 import { useTable } from "react-table";
-const GuidelineList = props => {
+import { useNavigate  } from "react-router-dom"
+
+const CodingPaperList = props => {
   const [guidelines, setGuidelines] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
   const guidelinesRef = useRef();
   guidelinesRef.current = guidelines;
+  const navigate = useNavigate();
   useEffect(() => {
     retrieveGuidelines();
   }, []);
@@ -46,13 +49,14 @@ const GuidelineList = props => {
   };
   const openGuidelines = (rowIndex) => {
     const id = guidelinesRef.current[rowIndex].id;
-    props.history.push("/guidelines/" + id);
+    console.log(props)
+    navigate("/codingpapers/" + id);
   };
   const deleteGuideline = (rowIndex) => {
     const id = guidelinesRef.current[rowIndex].id;
     GuidelineService.remove(id)
       .then((response) => {
-        props.history.push("/guidelines");
+        props.history.push("/codingpapers");
         let newGuidelines = [...guidelinesRef.current];
         newGuidelines.splice(rowIndex, 1);
         setGuidelines(newGuidelines);
@@ -79,10 +83,10 @@ const GuidelineList = props => {
           return (
             <div>
               <span onClick={() => openGuidelines(rowIdx)}>
-                <i className="far fa-edit action mr-2"></i>
+                <i className="far fa-edit action mr-2">Edit</i>
               </span>
               <span onClick={() => deleteGuideline(rowIdx)}>
-                <i className="fas fa-trash action"></i>
+                <i className="fas fa-trash action"> - Delete</i>
               </span>
             </div>
           );
@@ -163,4 +167,4 @@ const GuidelineList = props => {
     </div>
   );
 };
-export default GuidelineList;
+export default CodingPaperList;

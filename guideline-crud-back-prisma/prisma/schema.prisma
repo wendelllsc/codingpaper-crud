@@ -25,6 +25,7 @@ model CodingPaper {
   timeMeasurementMethods       TemporalMeasurementMethod[]
   subjectiveMeasurementMethods SubjectiveMeasurementMethod[]
   codingExperimentSupport      CodingExperimentSupport[]
+  taskDesignTags               TaskDesignType[]
   createdAt                    DateTime                      @default(now()) @db.Timestamp(6)
   updatedAt                    DateTime                      @updatedAt
 }
@@ -78,4 +79,12 @@ model CodingExperimentSupport {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(255)
   codingPaper CodingPaper[]
+}
+
+model TaskDesignType {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime      @updatedAt
 }

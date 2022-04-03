@@ -17,6 +17,7 @@ const AddCodingPaper = () => {
     hasStudents:false,
     hasProfessionals:false,
     designTypes:[],
+    taskDesignTypesTags:[],
     taskDuration:0,
     experimentalSetting:"",
     measuringOutcomes:[],
@@ -33,6 +34,7 @@ const AddCodingPaper = () => {
   const [optionsGuidelines, setOptionsGuidelines] = useState([]);
   const [optionsRecruitingStrategies, setOptionsRecruitingStrategies] = useState([]);
   const [characterizationTags, setCharacterizationTags] = useState([])
+  const [taskDesignTypesTags, setTaskDesignTypesTags] = useState(["Maintenance","Writing","Testing","Inspection","Comprehension","Debugging","Design"])
   const [optionsDesignTypes, setOptionsDesignTypes] = useState([]);
   const [optionsMeasuringOutcomes, setMeasuringOutcomes] = useState([]);
   const [optionsTimeMeasurementMethods, setOptionsTimeMeasurementMethods] = useState([]);
@@ -50,6 +52,7 @@ const AddCodingPaper = () => {
     retrieveTimeMeasurementMethods();
     retrieveSubjectiveMeasurementMethods();
     retrieveCodingExperimentSupports();
+    setCodingPaper({ ...codingPaper, ["taskDesignTypesTags"]: taskDesignTypesTags }); 
   }, []);
 
   const retrieveGuidelines = () => {
@@ -160,6 +163,10 @@ const AddCodingPaper = () => {
     setCharacterizationTags(newTags)
     setCodingPaper({ ...codingPaper, ["tagsCharacterization"]: newTags }); 
   };
+  const handleTaskDesignTypesTagsChange = newTags => {
+    setTaskDesignTypesTags(newTags)
+    setCodingPaper({ ...codingPaper, ["taskDesignTypesTags"]: newTags }); 
+  };
 
   const handleCheckbox = event => {
     const { name, checked } = event.target;
@@ -167,38 +174,37 @@ const AddCodingPaper = () => {
   };
 
   const handleSelectDesignTypes = event => {
-    var designTypesFormatado = []
-    event.forEach((x, i) => designTypesFormatado.push( { id: x.value , name: x.label}) );
+    var designTypesFormatado = [{ id: event.value , name: event.label}]
     setCodingPaper({ ...codingPaper, ["designTypes"]: designTypesFormatado });
   };
 
   const handleMeasuringOutcomes = event => {
-    var measuringOutcomesFormatado = [{ id: event.value , name: event.label}]
-    setCodingPaper({ ...codingPaper, ["measuringOutcomes"]: measuringOutcomesFormatado });
-    if(event.value == 2){
-      setMeasuringTemporal(true)
-      setMeasuringSubjective(false)
-      setCodingPaper({ ...codingPaper, ["subjectiveMeasurementMethods"]: [] });
-    }
-    else if(event.value == 3){
-      setMeasuringSubjective(true)
-      setMeasuringTemporal(false)
-      setCodingPaper({ ...codingPaper, ["timeMeasurementMethods"]: [] });
+    var measuringOutcomesFormatado = [];
+    //1 Objective
+    //2 Temporal
+    //3 Subjective
 
-    }
-    else if(event.value == 4){
-      setMeasuringTemporal(true)
-      setMeasuringSubjective(false)
-      setCodingPaper({ ...codingPaper, ["subjectiveMeasurementMethods"]: [] });
-    }
-    else if(event.value == 5){
-      setMeasuringSubjective(true)
+    if (event.some( event => event.value == 2 )) {
       setMeasuringTemporal(true)
     }else{
-      setMeasuringSubjective(false)
+      console.log("naotem2")
       setMeasuringTemporal(false)
-      setCodingPaper({ ...codingPaper, ["timeMeasurementMethods"]: [], ["subjectiveMeasurementMethods"]: [] });
+      codingPaper.timeMeasurementMethods = []
+      setCodingPaper({ ...codingPaper, ["timeMeasurementMethods"]: [] });
     }
+    if (event.some( event => event.value == 3 )) {
+      setMeasuringSubjective(true)
+    }else{
+      setMeasuringSubjective(false)
+      codingPaper.subjectiveMeasurementMethods = []
+      setCodingPaper({ ...codingPaper, ["subjectiveMeasurementMethods"]: [] });
+    }
+    
+    event.forEach(function(value){
+      measuringOutcomesFormatado.push( { id: value.value , name: value.label})   
+    });
+    setCodingPaper({ ...codingPaper, ["measuringOutcomes"]: measuringOutcomesFormatado });
+    
   }
 
   const handleTemporalMethods = event => {
@@ -236,7 +242,9 @@ const AddCodingPaper = () => {
       measuringOutcomes:codingPaper.measuringOutcomes,
       timeMeasurementMethods:codingPaper.timeMeasurementMethods,
       subjectiveMeasurementMethods:codingPaper.subjectiveMeasurementMethods,
-      codingExperimentSupport:codingPaper.codingExperimentSupport
+      codingExperimentSupport:codingPaper.codingExperimentSupport,
+      taskDesignTypesTags:codingPaper.taskDesignTypesTags,
+      designTypes:codingPaper.designTypes
 
     };
     console.log(data)
@@ -257,7 +265,9 @@ const AddCodingPaper = () => {
           measuringOutcomes:response.data.measuringOutcomes,
           timeMeasurementMethods:response.data.timeMeasurementMethods,
           subjectiveMeasurementMethods:response.data.subjectiveMeasurementMethods,
-          codingExperimentSupport:response.data.codingExperimentSupport
+          codingExperimentSupport:response.data.codingExperimentSupport,
+          taskDesignTypesTags:response.data.taskDesignTypesTags,
+          designTypes:response.data.designTypes
         });
         console.log(response)
         setSubmitted(true);
@@ -381,7 +391,6 @@ const AddCodingPaper = () => {
                 <label htmlFor="recruitingStrategy">Design Types</label>
                 <Select
                   className=""
-                  isMulti
                   id="designTypes"
                   required
                   options={optionsDesignTypes}
@@ -390,7 +399,20 @@ const AddCodingPaper = () => {
                 />
               </div>
 
-              <div className="col-md-3">
+              <div className="col-md-6">
+                <label htmlFor="taskDesignTypes">Task Design Types</label>
+                <ReactTagInput
+                id="taskDesignTypes"
+                name="taskDesignTypes"
+                tags={taskDesignTypesTags}
+                placeholder="Type and press enter"
+                editable={true}
+                removeOnBackspace={true}
+                onChange={(newTags) => handleTaskDesignTypesTagsChange(newTags)}
+              />
+              </div>
+
+              {/* <div className="col-md-3">
                 <label htmlFor="sampleSize">Task Duration (Hour)</label>
                 <input
                   type="number"
@@ -401,7 +423,7 @@ const AddCodingPaper = () => {
                   onChange={handleInputChange}
                   name="taskDuration"
                 />
-              </div>
+              </div> */}
 
               <h4 className="mt-3">Control and Measuring</h4>
 
@@ -424,6 +446,7 @@ const AddCodingPaper = () => {
                   className=""
                   id="measuringOutcome"
                   required
+                  isMulti
                   options={optionsMeasuringOutcomes}
                   onChange={handleMeasuringOutcomes}
                   name="measuringOutcome"

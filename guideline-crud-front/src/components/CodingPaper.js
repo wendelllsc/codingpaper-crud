@@ -52,7 +52,7 @@ const Guideline = props => {
     GuidelineService.remove(currentGuideline.id)
       .then(response => {
         console.log(response.data);
-        props.history.push("/guidelines");
+        props.history.push("/codingpapers");
       })
       .catch(e => {
         console.log(e);

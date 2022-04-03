@@ -30,28 +30,40 @@ const recruitingStrategyData: Prisma.RecruitingStrategyCreateInput[] = [
 
 const designTypeData: Prisma.DesignTypeCreateInput[] = [
   {
-    name: 'Maintenance'
+    name: 'Completely randomized design'
   },
   {
-    name: 'Writing'
+    name: 'Paired comparison'
   },
   {
-    name: 'Testing'
-  },
-  {
-    name: 'Inspection'
-  },
-  {
-    name: 'Comprehension'
-  },
-  {
-    name: 'Debugging'
-  },
-  {
-    name: 'Design'
-  },
-  
+    name: 'Randomized complete block design'
+  }
 ]
+
+// const designTypeData: Prisma.DesignTypeCreateInput[] = [
+//   {
+//     name: 'Maintenance'
+//   },
+//   {
+//     name: 'Writing'
+//   },
+//   {
+//     name: 'Testing'
+//   },
+//   {
+//     name: 'Inspection'
+//   },
+//   {
+//     name: 'Comprehension'
+//   },
+//   {
+//     name: 'Debugging'
+//   },
+//   {
+//     name: 'Design'
+//   },
+  
+// ]
 
 const temporalMeasurementMethodData: Prisma.TemporalMeasurementMethodCreateInput[] = [
   {
@@ -100,12 +112,6 @@ const measuringOutcomesData: Prisma.MeasuringOutcomeCreateInput[] = [
   },
   {
     name: 'Only Subjective Measurement'
-  },
-  {
-    name: 'Objective and Temporal Measurement'
-  },
-  {
-    name: 'Subjective and Temporal Measurement'
   },
   {
     name: 'Others'

@@ -12,7 +12,7 @@ var router = express.Router();
 // Create/Edit codingPaper
 router.post(`/codingpaper`, async (req, res) => {
   console.log(req.body)
-  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , recruitingStrategies, tagsCharacterization, experimentalSetting } = req.body
+  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , recruitingStrategies, tagsCharacterization, experimentalSetting ,taskDesignTypesTags} = req.body
  
   const guidelineData = guidelines?.map((method:any) => {
     return {  id : method.id};
@@ -22,6 +22,10 @@ router.post(`/codingpaper`, async (req, res) => {
   })
 
   const tagsCharacterizationData = tagsCharacterization?.map((method:any) => {
+    return {  name : method};
+  })
+
+  const taskDesignTypesTagsData = taskDesignTypesTags?.map((method:any) => {
     return {  name : method};
   })
 
@@ -80,6 +84,9 @@ try{
       sampleTags: {
         create: tagsCharacterizationData
       },
+      taskDesignTags: {
+        create: taskDesignTypesTagsData
+      }
     },
   })
 
@@ -99,7 +106,22 @@ try{
  
 })
 
+
+app.get(`/codingpaper/:id`, async (req, res) => {
+  const { id }: { id?: string } = req.params
+
+  const post = await prisma.codingPaper.findUnique({
+    where: { id: Number(id) },
+  })
+  res.json(post)
+})
+
 //FetchService
+router.get('/codingPaper', async (req, res) => {
+  const codingPapers = await prisma.codingPaper.findMany()
+  res.json(codingPapers)
+})
+
 router.get('/guidelines', async (req, res) => {
   const guidelines = await prisma.guideline.findMany()
   res.json(guidelines)
