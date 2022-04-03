@@ -1,35 +1,69 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import GuidelineService from "../services/CodingPaperService";
+import CodingPaperService from "../services/CodingPaperService";
 import { useTable } from "react-table";
 import { useNavigate  } from "react-router-dom"
 
 const CodingPaperList = props => {
-  const [guidelines, setGuidelines] = useState([]);
-  const [searchTitle, setSearchTitle] = useState("");
-  const guidelinesRef = useRef();
-  guidelinesRef.current = guidelines;
+  const initialSearchParams = {
+    id: null,
+    title: "",
+    description: "",
+    guidelines:[],
+    sampleSize:0,
+    recruitingStrategies:[],
+    tagsCharacterization:[],
+    hasStudents:false,
+    hasProfessionals:false,
+    designTypes:[],
+    taskDesignTypesTags:[],
+    taskDuration:0,
+    experimentalSetting:"",
+    measuringOutcomes:[],
+    timeMeasurementMethods:[],
+    subjectiveMeasurementMethods:[],
+    codingExperimentSupport:[]
+  
+    // Ver como pega o relacionado
+  };
+
+  const [codingpapers, setCodingPapers] = useState([]);
+  const [searchParams, setSearchTitle] = useState(initialSearchParams);
+  const codingPaperRef = useRef();
+  codingPaperRef.current = codingpapers;
   const navigate = useNavigate();
   useEffect(() => {
-    retrieveGuidelines();
+    retrieveCodingPapers();
   }, []);
   const onChangeSearchTitle = (e) => {
     const searchTitle = e.target.value;
-    setSearchTitle(searchTitle);
+    setSearchTitle(searchParams);
   };
-  const retrieveGuidelines = () => {
-    GuidelineService.getAll()
+  const retrieveCodingPapers = () => {
+    CodingPaperService.getAll()
       .then((response) => {
-        setGuidelines(response.data);
+        setCodingPapers(response.data);
       })
       .catch((e) => {
         console.log(e);
       });
   };
-  const refreshList = () => {
-    retrieveGuidelines();
+
+  const retrieveCodingPapersFiltered = () => {
+    CodingPaperService.getAll()
+      .then((response) => {
+        setCodingPapers(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
-  const removeAllGuidelines = () => {
-    GuidelineService.removeAll()
+
+
+  const refreshList = () => {
+    retrieveCodingPapers();
+  };
+  const removeCodingPapers = () => {
+    CodingPaperService.removeAll()
       .then((response) => {
         console.log(response.data);
         refreshList();
@@ -39,27 +73,27 @@ const CodingPaperList = props => {
       });
   };
   const findByTitle = () => {
-    GuidelineService.findByTitle(searchTitle)
+    CodingPaperService.findByTitle(searchParams)
       .then((response) => {
-        setGuidelines(response.data);
+        setCodingPapers(response.data);
       })
       .catch((e) => {
         console.log(e);
       });
   };
-  const openGuidelines = (rowIndex) => {
-    const id = guidelinesRef.current[rowIndex].id;
+  const openCodingPapers = (rowIndex) => {
+    const id = codingPaperRef.current[rowIndex].id;
     console.log(props)
     navigate("/codingpapers/" + id);
   };
-  const deleteGuideline = (rowIndex) => {
-    const id = guidelinesRef.current[rowIndex].id;
-    GuidelineService.remove(id)
+  const deleteCodingPapers = (rowIndex) => {
+    const id = codingPaperRef.current[rowIndex].id;
+    CodingPaperService.remove(id)
       .then((response) => {
         props.history.push("/codingpapers");
-        let newGuidelines = [...guidelinesRef.current];
-        newGuidelines.splice(rowIndex, 1);
-        setGuidelines(newGuidelines);
+        let newCodingPapers = [...codingPaperRef.current];
+        newCodingPapers.splice(rowIndex, 1);
+        setCodingPapers(newCodingPapers);
       })
       .catch((e) => {
         console.log(e);
@@ -82,10 +116,10 @@ const CodingPaperList = props => {
           const rowIdx = props.row.id;
           return (
             <div>
-              <span onClick={() => openGuidelines(rowIdx)}>
+              <span onClick={() => openCodingPapers(rowIdx)}>
                 <i className="far fa-edit action mr-2">Edit</i>
               </span>
-              <span onClick={() => deleteGuideline(rowIdx)}>
+              <span onClick={() => deleteCodingPapers(rowIdx)}>
                 <i className="fas fa-trash action"> - Delete</i>
               </span>
             </div>
@@ -103,7 +137,7 @@ const CodingPaperList = props => {
     prepareRow,
   } = useTable({
     columns,
-    data: guidelines,
+    data: codingpapers,
   });
   return (
     <div className="list row">
@@ -113,7 +147,7 @@ const CodingPaperList = props => {
             type="text"
             className="form-control"
             placeholder="Search by title"
-            value={searchTitle}
+            value={searchParams}
             onChange={onChangeSearchTitle}
           />
           <div className="input-group-append">
@@ -159,11 +193,11 @@ const CodingPaperList = props => {
           </tbody>
         </table>
       </div>
-      <div className="col-md-8">
-        <button className="btn btn-sm btn-danger" onClick={removeAllGuidelines}>
+      {/* <div className="col-md-8">
+        <button className="btn btn-sm btn-danger" onClick={removeCodingPapers}>
           Remove All
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import Select from 'react-select'
 import ReactTagInput from "@pathofdev/react-tag-input";
 import "@pathofdev/react-tag-input/build/index.css";
 
-const AddCodingPaper = () => {
+const AddCodingPaper = (match,teste) => {
   const initialCodingPaperState = {
     id: null,
     title: "",
@@ -27,6 +27,8 @@ const AddCodingPaper = () => {
   
     // Ver como pega o relacionado
   };
+  let isEditMode = false;
+  
   const [codingPaper, setCodingPaper] = useState(initialCodingPaperState);
   const [submitted, setSubmitted] = useState(false);
   const [isMeasuringTemporal, setMeasuringTemporal] = useState(false);
@@ -45,6 +47,7 @@ const AddCodingPaper = () => {
 
 
   useEffect(() => {
+    checkEditMode()
     retrieveGuidelines();
     retrieveRecruitingStrategy();
     retrieveDesignTypes();
@@ -282,6 +285,16 @@ const AddCodingPaper = () => {
     setMeasuringTemporal(false);
     setMeasuringSubjective(false);
     setCharacterizationTags([]);
+  };
+
+
+  const checkEditMode = () => {
+    let str = window.location.pathname;
+    let n = str.search(/codingpapers/i);
+    if(n == 1){
+      isEditMode = true;
+    } // Ver como fazer isso aqui 
+    return isEditMode;
   };
 
   return (
