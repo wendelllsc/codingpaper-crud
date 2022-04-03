@@ -119,6 +119,20 @@ const measuringOutcomesData: Prisma.MeasuringOutcomeCreateInput[] = [
   
 ]
 
+const experimentalSettingData: Prisma.ExperimentalSettingCreateInput[] = [
+  {
+    name: 'Classroom'
+  },
+  {
+    name: 'Company'
+  },
+  {
+    name: 'Unknown'
+  }
+  
+  
+]
+
 const codingExperimentSupportData: Prisma.CodingExperimentSupportCreateInput[] = [
   {
     name: 'Specific software tools'
@@ -200,6 +214,12 @@ async function main() {
     console.log(`Created designType with id: ${subjectiveMeasurementMethodData.id}`)
   }
 
+  for (const u of experimentalSettingData) {
+    const subjectiveMeasurementMethodData = await prisma.experimentalSetting.create({
+      data: u,
+    })
+    console.log(`Created designType with id: ${subjectiveMeasurementMethodData.id}`)
+  }
   
   console.log(`Seeding finished.`)
 }

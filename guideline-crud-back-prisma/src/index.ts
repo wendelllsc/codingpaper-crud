@@ -12,7 +12,7 @@ var router = express.Router();
 // Create/Edit codingPaper
 router.post(`/codingpaper`, async (req, res) => {
   console.log(req.body)
-  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , recruitingStrategies, tagsCharacterization, experimentalSetting ,taskDesignTypesTags} = req.body
+  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , isReplicable, recruitingStrategies, tagsCharacterization, experimentalSetting ,taskDesignTypesTags} = req.body
  
   const guidelineData = guidelines?.map((method:any) => {
     return {  id : method.id};
@@ -48,6 +48,10 @@ router.post(`/codingpaper`, async (req, res) => {
   const codingExperimentSupportData = codingExperimentSupport?.map((method:any) => {
     return {  id : method.id};
   })
+
+  const experimentalSettingsData = experimentalSetting?.map((method:any) => {
+    return {  id : method.id};
+  })
   const sampleSize = parseInt(req.body.sampleSize);
   const taskDuration = parseInt(req.body.taskDuration);
 try{
@@ -59,7 +63,7 @@ try{
       hasProfessionals,
       sampleSize,
       taskDuration,
-      experimentalSetting,
+      isReplicable,
       guidelines: {
         connect: guidelineData
       },
@@ -86,6 +90,9 @@ try{
       },
       taskDesignTags: {
         create: taskDesignTypesTagsData
+      },
+      experimentalSetting: {
+        connect: experimentalSettingsData
       }
     },
   })
@@ -103,6 +110,17 @@ try{
   //     },
   //   },
   // })
+ 
+})
+
+
+router.post(`/searchCodingpapers`, async (req, res) => {
+  const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , isReplicable, recruitingStrategies, tagsCharacterization, experimentalSetting ,taskDesignTypesTags} = req.body
+  
+  const post = await prisma.codingPaper.findMany({
+    where: { id: 1 },
+  })
+  res.json(post)
  
 })
 
@@ -155,6 +173,11 @@ router.get('/subjectiveMeasurementMethods', async (req, res) => {
 router.get('/codingExperimentSupports', async (req, res) => {
   const codingExperimentSupports = await prisma.codingExperimentSupport.findMany()
   res.json(codingExperimentSupports)
+})
+
+router.get('/experimentalSettings', async (req, res) => {
+  const experimentalSettingsData = await prisma.experimentalSetting.findMany()
+  res.json(experimentalSettingsData)
 })
 
 

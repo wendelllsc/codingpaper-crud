@@ -19,11 +19,12 @@ const AddCodingPaper = (match,teste) => {
     designTypes:[],
     taskDesignTypesTags:[],
     taskDuration:0,
-    experimentalSetting:"",
+    experimentalSetting:[],
     measuringOutcomes:[],
     timeMeasurementMethods:[],
     subjectiveMeasurementMethods:[],
-    codingExperimentSupport:[]
+    codingExperimentSupport:[],
+    isReplicable:false
   
     // Ver como pega o relacionado
   };
@@ -41,6 +42,7 @@ const AddCodingPaper = (match,teste) => {
   const [optionsMeasuringOutcomes, setMeasuringOutcomes] = useState([]);
   const [optionsTimeMeasurementMethods, setOptionsTimeMeasurementMethods] = useState([]);
   const [optionsSubjectiveMeasurementMethods, setSubjectiveMeasurementMethods] = useState([]);
+  const [optionsExperimentalSetting, setOptionsExperimentalSetting] = useState([]);
   const [optionsCodingExperimentSupport, setCodingExperimentSupport] = useState([]);
 
 
@@ -55,6 +57,7 @@ const AddCodingPaper = (match,teste) => {
     retrieveTimeMeasurementMethods();
     retrieveSubjectiveMeasurementMethods();
     retrieveCodingExperimentSupports();
+    retrieveExperimentalSetting()
     setCodingPaper({ ...codingPaper, ["taskDesignTypesTags"]: taskDesignTypesTags }); 
   }, []);
 
@@ -136,6 +139,18 @@ const AddCodingPaper = (match,teste) => {
         var optionsCodingExperimentSupportsFormatado = []
         response.data.forEach((x, i) => optionsCodingExperimentSupportsFormatado.push({ value: x.id, label: x.name }) );
         setCodingExperimentSupport(optionsCodingExperimentSupportsFormatado)
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const retrieveExperimentalSetting = () => {
+    FetchService.getAllExperimentalSettings()
+      .then((response) => {
+        var optionsSubjectiveMeasurementMethodsFormatado = []
+        response.data.forEach((x, i) => optionsSubjectiveMeasurementMethodsFormatado.push({ value: x.id, label: x.name }) );
+        setOptionsExperimentalSetting(optionsSubjectiveMeasurementMethodsFormatado)
       })
       .catch((e) => {
         console.log(e);
@@ -228,6 +243,12 @@ const AddCodingPaper = (match,teste) => {
     setCodingPaper({ ...codingPaper, ["codingExperimentSupport"]: codingExperimentSupportFormatado });
   };
 
+  const handleExperimentalSetting = event => {
+    var guideline = []
+    event.forEach((x, i) => guideline.push( { id: x.value , name: x.label}) );
+    setCodingPaper({ ...codingPaper, ["experimentalSetting"]: guideline }); 
+  };
+
 
 
   const saveCodingPaper = () => {
@@ -247,7 +268,8 @@ const AddCodingPaper = (match,teste) => {
       subjectiveMeasurementMethods:codingPaper.subjectiveMeasurementMethods,
       codingExperimentSupport:codingPaper.codingExperimentSupport,
       taskDesignTypesTags:codingPaper.taskDesignTypesTags,
-      designTypes:codingPaper.designTypes
+      designTypes:codingPaper.designTypes,
+      isReplicable:codingPaper.isReplicable
 
     };
     console.log(data)
@@ -270,7 +292,8 @@ const AddCodingPaper = (match,teste) => {
           subjectiveMeasurementMethods:response.data.subjectiveMeasurementMethods,
           codingExperimentSupport:response.data.codingExperimentSupport,
           taskDesignTypesTags:response.data.taskDesignTypesTags,
-          designTypes:response.data.designTypes
+          designTypes:response.data.designTypes,
+          isReplicable:response.data.isReplicable
         });
         console.log(response)
         setSubmitted(true);
@@ -441,14 +464,14 @@ const AddCodingPaper = (match,teste) => {
               <h4 className="mt-3">Control and Measuring</h4>
 
               <div className="col-md-3">
-                <label htmlFor="title">Experimental Setting</label>
-                <input
-                  type="text"
-                  className="form-control"
+                <label htmlFor="recruitingStrategy">Experimental Setting</label>
+                <Select
+                  className=""
                   id="experimentalSetting"
                   required
-                  value={codingPaper.experimentalSetting}
-                  onChange={handleInputChange}
+                  isMulti
+                  options={optionsExperimentalSetting}
+                  onChange={handleExperimentalSetting}
                   name="experimentalSetting"
                 />
               </div>
@@ -497,7 +520,7 @@ const AddCodingPaper = (match,teste) => {
                     />
                   </div>
               }
-              <div className="col-md-4">
+              {/* <div className="col-md-4">
                   <label htmlFor="recruitingStrategy">Coding Experiment Support</label>
                   <Select
                     className=""
@@ -508,7 +531,14 @@ const AddCodingPaper = (match,teste) => {
                     onChange={handleSelectCodingExperimentSupport}
                     name="codingExperimentSupport"
                   />
-                </div>
+                </div> */}
+
+                <div className="col-md-4 checkbox-container">
+                  <div className="form-check form-check-inline">
+                    <input onChange={handleCheckbox} className="form-check-input" type="checkbox" name="isReplicable" id="isReplicable" value="1"/>
+                    <label className="form-check-label" htmlFor="isReplicable">Experiment is replicable</label>
+                  </div>
+              </div>
 
               <button onClick={saveCodingPaper} className="btn btn-success mt-3">
                 Submit

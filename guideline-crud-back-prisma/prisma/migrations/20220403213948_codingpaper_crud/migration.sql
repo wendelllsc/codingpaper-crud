@@ -7,7 +7,7 @@ CREATE TABLE `CodingPaper` (
     `hasStudents` BOOLEAN NOT NULL DEFAULT false,
     `hasProfessionals` BOOLEAN NOT NULL DEFAULT false,
     `taskDuration` INTEGER NULL,
-    `experimentalSetting` VARCHAR(255) NOT NULL,
+    `isReplicable` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -51,6 +51,14 @@ CREATE TABLE `DesignType` (
 
 -- CreateTable
 CREATE TABLE `MeasuringOutcome` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ExperimentalSetting` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
 
@@ -128,6 +136,15 @@ CREATE TABLE `_CodingPaperToDesignType` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `_CodingPaperToExperimentalSetting` (
+    `A` INTEGER NOT NULL,
+    `B` INTEGER NOT NULL,
+
+    UNIQUE INDEX `_CodingPaperToExperimentalSetting_AB_unique`(`A`, `B`),
+    INDEX `_CodingPaperToExperimentalSetting_B_index`(`B`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `_CodingPaperToMeasuringOutcome` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
@@ -195,6 +212,12 @@ ALTER TABLE `_CodingPaperToDesignType` ADD FOREIGN KEY (`A`) REFERENCES `CodingP
 
 -- AddForeignKey
 ALTER TABLE `_CodingPaperToDesignType` ADD FOREIGN KEY (`B`) REFERENCES `DesignType`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_CodingPaperToExperimentalSetting` ADD FOREIGN KEY (`A`) REFERENCES `CodingPaper`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_CodingPaperToExperimentalSetting` ADD FOREIGN KEY (`B`) REFERENCES `ExperimentalSetting`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_CodingPaperToMeasuringOutcome` ADD FOREIGN KEY (`A`) REFERENCES `CodingPaper`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

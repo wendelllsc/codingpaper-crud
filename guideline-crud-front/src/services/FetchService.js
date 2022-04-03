@@ -27,6 +27,14 @@ const getAllCodingExperimentSupports = () => {
   return http.get("/codingExperimentSupports");
 };
 
+const getAllExperimentalSettings = () => {
+  return http.get("/experimentalSettings");
+};
+
+const searchByParams = data => {
+  return http.post(`/searchCodingpapers`, data);
+};
+
 export default {
   getAllGuidelines,
   getAllRecruitingStrategies,
@@ -34,5 +42,7 @@ export default {
   getAllMeasuringOutcomes,
   getAllTimeMeasurementMethods,
   getAllSubjectiveMeasurementMethods,
-  getAllCodingExperimentSupports
+  getAllCodingExperimentSupports,
+  getAllExperimentalSettings,
+  searchByParams
 };

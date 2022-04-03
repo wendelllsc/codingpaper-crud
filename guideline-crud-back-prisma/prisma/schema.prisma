@@ -20,12 +20,13 @@ model CodingPaper {
   hasProfessionals             Boolean                       @default(false)
   designTypes                  DesignType[]
   taskDuration                 Int?
-  experimentalSetting          String                        @db.VarChar(255)
+  experimentalSetting          ExperimentalSetting[]
   measuringOutcomes            MeasuringOutcome[]
   timeMeasurementMethods       TemporalMeasurementMethod[]
   subjectiveMeasurementMethods SubjectiveMeasurementMethod[]
   codingExperimentSupport      CodingExperimentSupport[]
   taskDesignTags               TaskDesignType[]
+  isReplicable                 Boolean                       @default(false)
   createdAt                    DateTime                      @default(now()) @db.Timestamp(6)
   updatedAt                    DateTime                      @updatedAt
 }
@@ -58,6 +59,12 @@ model DesignType {
 }
 
 model MeasuringOutcome {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  codingPaper CodingPaper[]
+}
+
+model ExperimentalSetting {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(255)
   codingPaper CodingPaper[]
