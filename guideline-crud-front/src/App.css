@@ -12,6 +12,18 @@
   margin-top: 0.5em;
   margin-bottom: 1.5em;
 }
+
+.guideline-div{
+  display: inline
+}
+
+.guideline-add-div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  
+  margin-top: 25px;
+  margin-left: -15px;
+}
 /* .submit-form {
   max-width: 450px;
   margin: auto;

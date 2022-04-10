@@ -125,6 +125,26 @@ router.post(`/searchCodingpapers`, async (req, res) => {
 })
 
 
+router.post(`/addGuideline`, async (req, res) => {
+  console.log(req.body)
+  const { title , author } = req.body
+try{
+  const result = await prisma.guideline.create({
+    data: {
+      title,
+      author
+    }
+  })
+
+  res.json(result)
+}catch (e){
+  
+}
+
+ 
+})
+
+
 app.get(`/codingpaper/:id`, async (req, res) => {
   const { id }: { id?: string } = req.params
 

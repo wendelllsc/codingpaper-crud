@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import CodingPaperService from "../services/CodingPaperService";
 import FetchService from "../services/FetchService";
 import Select from 'react-select'
 import ReactTagInput from "@pathofdev/react-tag-input";
 import "@pathofdev/react-tag-input/build/index.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import ModalAddGuideline from "./ModalAddGuideline";
 
 const AddCodingPaper = (match,teste) => {
   const initialCodingPaperState = {
@@ -60,6 +63,8 @@ const AddCodingPaper = (match,teste) => {
     retrieveExperimentalSetting()
     setCodingPaper({ ...codingPaper, ["taskDesignTypesTags"]: taskDesignTypesTags }); 
   }, []);
+
+  const textInput = useRef(null);
 
   const retrieveGuidelines = () => {
     FetchService.getAllGuidelines()
@@ -310,7 +315,6 @@ const AddCodingPaper = (match,teste) => {
     setCharacterizationTags([]);
   };
 
-
   const checkEditMode = () => {
     let str = window.location.pathname;
     let n = str.search(/codingpapers/i);
@@ -384,8 +388,8 @@ const AddCodingPaper = (match,teste) => {
                 />
               </div>
 
-              <div className="col-md-3">
-                <label htmlFor="guidelines">Guidelines</label>
+              <div className="col-md-2">
+                <label htmlFor="guidelines">Guidelines </label>
                 <Select
                   className=""
                   isMulti
@@ -394,8 +398,13 @@ const AddCodingPaper = (match,teste) => {
                   options={optionsGuidelines}
                   onChange={handleSelectGuidelineChange}
                   name="guidelines"
+                  ref={textInput}
                 />
               </div>
+
+              <div onClick={retrieveGuidelines()} className="col-md-1 guideline-add-div">
+                <span className=""><ModalAddGuideline/></span>
+              </div>  
 
               <div className="col-md-6">
                 <label htmlFor="sampleCharacterization">Sample characterization</label>
@@ -545,8 +554,6 @@ const AddCodingPaper = (match,teste) => {
               </button>
             </div>
         </div>
-
-        
       )}
     </div>
   );;

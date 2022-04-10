@@ -20,6 +20,10 @@ const removeAll = () => {
 const findByTitle = title => {
   return http.get(`/codingpaper?title=${title}`);
 };
+
+const createGuideline = data => {
+  return http.post("/addGuideline", data);
+};
 export default {
   getAll,
   get,
@@ -27,5 +31,6 @@ export default {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  createGuideline
 };
