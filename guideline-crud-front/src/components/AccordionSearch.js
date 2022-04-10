@@ -32,7 +32,6 @@ const AccordionSearch = params => {
     
     
     };
-
     const [searchParams, setSearchParams] = useState(initialSearchParams);
     const [optionsRecruitingStrategies, setOptionsRecruitingStrategies] = useState([]);
     const [optionsGuidelines, setOptionsGuidelines] = useState([]);
@@ -45,7 +44,6 @@ const AccordionSearch = params => {
     const [optionsTimeMeasurementMethods, setOptionsTimeMeasurementMethods] = useState([]);
     const [optionsSubjectiveMeasurementMethods, setSubjectiveMeasurementMethods] = useState([]);
     const [optionsExperimentalSetting, setOptionsExperimentalSetting] = useState([]);
-
 
     useEffect(() => {
         retrieveRecruitingStrategy();
@@ -143,10 +141,12 @@ const AccordionSearch = params => {
 
       const handleCharacterizationTagsChange = newTags => {
         setCharacterizationTags(newTags)
+        setSearchParams({ ...searchParams, ["tagsCharacterization"]: newTags });
       };
 
       const handleTaskDesignTypesTagsChange = newTags => {
         setTaskDesignTypesTags(newTags)
+        setSearchParams({ ...searchParams, ["taskDesignTypesTags"]: newTags });
       };
 
       const handleMeasuringOutcomes = event => {
@@ -161,6 +161,11 @@ const AccordionSearch = params => {
         }else{
           setMeasuringSubjective(false)
         }
+
+        event.forEach(function(value){
+          measuringOutcomesFormatado.push( { id: value.value , name: value.label})   
+        });
+        setSearchParams({ ...searchParams, ["measuringOutcomes"]: measuringOutcomesFormatado });
       }
 
       const handleClickSearch = () => {
@@ -189,6 +194,8 @@ const AccordionSearch = params => {
            if(response.data != null && response.data.length > 0) {
             params.setCodingPapers(response.data)
            }else{
+            params.retrieveCodingPapers();
+            params.showNotFoundError();
              console.log("Não achou nenhum com esses parâmetros")
            }
           })
@@ -220,7 +227,8 @@ const AccordionSearch = params => {
       };
 
       const handleSelectDesignTypes = event => {
-        var designTypesFormatado = [{ id: event.value , name: event.label}]
+        var designTypesFormatado = []
+        event.forEach((x, i) => designTypesFormatado.push( { id: x.value , name: x.label}) );
         setSearchParams({ ...searchParams, ["designTypes"]: designTypesFormatado });
       };
 
@@ -351,7 +359,7 @@ const AccordionSearch = params => {
                   <label className="form-check-label" htmlFor="hasStudents">Sample has Students</label>
                 </div>
                 <div className="form-check form-check-inline">
-                  <input className="form-check-input" type="checkbox" name="hasProfessionals" id="hasProfessionals" value="1"/>
+                  <input onChange={handleCheckbox} className="form-check-input" type="checkbox" name="hasProfessionals" id="hasProfessionals" value="1"/>
                   <label className="form-check-label" htmlFor="hasProfessionals">Sample has Professionals</label>
                 </div>
               </div>
@@ -374,6 +382,7 @@ const AccordionSearch = params => {
                     <label htmlFor="recruitingStrategy">Design Types</label>
                     <Select
                     className=""
+                    isMulti
                     id="designTypes"
                     required
                     options={optionsDesignTypes}

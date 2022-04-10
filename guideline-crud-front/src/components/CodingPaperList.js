@@ -3,6 +3,8 @@ import CodingPaperService from "../services/CodingPaperService";
 import { useTable } from "react-table";
 import { useNavigate  } from "react-router-dom"
 import AccordionSearch from "./AccordionSearch";
+import AlertaNaoEncontrado from "./AlertaNaoEncontrado"
+
 
 const CodingPaperList = props => {
   const initialSearchParams = {
@@ -26,7 +28,7 @@ const CodingPaperList = props => {
   
     // Ver como pega o relacionado
   };
-
+  const [mostraErro, setMostraErro] = useState(false);
   const [codingpapers, setCodingPapers] = useState([]);
   const [searchParams, setSearchTitle] = useState(initialSearchParams);
   const codingPaperRef = useRef();
@@ -89,6 +91,11 @@ const CodingPaperList = props => {
     navigate("/codingpapers/" + id);
   };
 
+  const showNotFoundError = () => {
+    setMostraErro(true)
+    setTimeout(function() {setMostraErro(false)},3000)
+  };
+
   const deleteCodingPapers = (rowIndex) => {
     const id = codingPaperRef.current[rowIndex].id;
     CodingPaperService.remove(id)
@@ -146,12 +153,13 @@ const CodingPaperList = props => {
 
   return (
       <div className="container mt-5">
+        {mostraErro ? <AlertaNaoEncontrado/> : "" }
         <div className="row">
-          <div className="col-md-3">
-           <AccordionSearch setCodingPapers={setCodingPapers} />
+          <div className="col-md-4">
+           <AccordionSearch setCodingPapers={setCodingPapers} retrieveCodingPapers={retrieveCodingPapers} showNotFoundError={showNotFoundError} />
           </div>
       
-          <div className="col-md-9">
+          <div className="col-md-8">
             <table
               className="table table-striped table-bordered"
               {...getTableProps()}

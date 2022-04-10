@@ -116,12 +116,200 @@ try{
 
 router.post(`/searchCodingpapers`, async (req, res) => {
   const { description , designTypes, measuringOutcomes, timeMeasurementMethods , codingExperimentSupport, subjectiveMeasurementMethods, guidelines , title, hasProfessionals, hasStudents , isReplicable, recruitingStrategies, tagsCharacterization, experimentalSetting ,taskDesignTypesTags} = req.body
-  
-  const post = await prisma.codingPaper.findMany({
-    where: { id: 1 },
+  console.log(req.body)
+  let sampleSize = parseInt(req.body.sampleSize);
+
+  let timeMeasurementMethodsData: any[] = []
+  timeMeasurementMethods?.map((method:any) => {
+    timeMeasurementMethodsData.push(method.id);
   })
-  res.json(post)
- 
+
+  let subjectiveMeasurementMethodsData: any[] = []
+  subjectiveMeasurementMethods?.map((method:any) => {
+    subjectiveMeasurementMethodsData.push(method.id);
+  })
+
+  let recruitingStrategiesData: any[] = []
+  recruitingStrategies?.map((method:any) => {
+    recruitingStrategiesData.push(method.id);
+  })
+
+  let designTypesData: any[] = []
+  designTypes?.map((method:any) => {
+    designTypesData.push(method.id);
+  })
+  
+
+  let guidelineData: any[] = []
+  guidelines?.map((method:any) => {
+    guidelineData.push(method.id);
+  })
+
+  let experimentalSettingData: any[] = []
+  experimentalSetting?.map((method:any) => {
+    experimentalSettingData.push(method.id);
+  })
+
+  let measuringOutcomesData: any[] = []
+  measuringOutcomes?.map((method:any) => {
+    measuringOutcomesData.push(method.id);
+  })
+
+  let busca =  {
+    where: {  
+    },
+  }
+
+  if(title != undefined && title != null && title != ""){
+    Object.assign(busca.where, {title: {
+      contains:title
+      }})
+  }
+
+  if(description != undefined && description != null && description != ""){
+    Object.assign(busca.where, {description: {
+      contains:description
+      }})
+  }
+
+  if(sampleSize != undefined && sampleSize != null && sampleSize > 0){
+    Object.assign(busca.where, {sampleSize: {
+        lte:sampleSize
+      }})
+  }
+
+  if(recruitingStrategiesData.length > 0 ){
+    Object.assign(busca.where, {sampleRecruitments: {
+      some:{
+        id:{
+          in : recruitingStrategiesData
+        }
+      }
+      }})
+  }
+
+  if(guidelineData.length > 0 ){
+    Object.assign(busca.where, {guidelines: {
+      some:{
+        id:{
+          in : guidelineData
+        }
+      }
+      }})
+  }
+
+  if(tagsCharacterization.length > 0 ){
+
+    let OR = [{}]
+    
+    for(let i = 0; i < tagsCharacterization.length; i++){
+        let val = tagsCharacterization[i];
+        let object = {
+          sampleTags: {
+            some:{
+              name: {
+                contains : val
+              }
+            }
+          }
+        }
+        OR.push(object)
+    }
+    Object.assign(busca.where, {OR})
+  }
+  
+  if(hasStudents){
+    Object.assign(busca.where, {hasStudents: hasStudents})
+  }
+
+  if(isReplicable){
+    Object.assign(busca.where, {isReplicable: isReplicable})
+  }
+
+  if(hasProfessionals){
+    Object.assign(busca.where, {hasProfessionals: hasProfessionals})
+  }
+
+  if(designTypesData.length > 0 ){
+    Object.assign(busca.where, {designTypes: {
+      some:{
+        id:{
+          in : designTypesData
+        }
+      }
+      }})
+  }
+
+  if(taskDesignTypesTags.length > 0 ){
+    let OR = [{}]
+    for(let i = 0; i < taskDesignTypesTags.length; i++){
+        let val = taskDesignTypesTags[i];
+        let object = {
+          taskDesignTags: {
+            some:{
+              name: {
+                contains : val
+              }
+            }
+          }
+        }
+        OR.push(object)
+    }
+    Object.assign(busca.where, {OR})
+  }
+
+  if(experimentalSettingData.length > 0 ){
+    Object.assign(busca.where, {experimentalSetting: {
+      some:{
+        id:{
+          in : experimentalSettingData
+        }
+      }
+      }})
+  }
+
+  if(measuringOutcomesData.length > 0 ){
+    Object.assign(busca.where, {measuringOutcomes: {
+      some:{
+        id:{
+          in : measuringOutcomesData
+        }
+      }
+      }})
+  }
+
+  if(timeMeasurementMethodsData.length > 0 ){
+    Object.assign(busca.where, {timeMeasurementMethods: {
+      some:{
+        id:{
+          in : timeMeasurementMethodsData
+        }
+      }
+      }})
+  }
+
+  if(subjectiveMeasurementMethodsData.length > 0 ){
+    Object.assign(busca.where, {subjectiveMeasurementMethods: {
+      some:{
+        id:{
+          in : subjectiveMeasurementMethodsData
+        }
+      }
+      }})
+  }
+
+  
+  
+  console.log(busca);
+  
+  let result = []
+  result = await prisma.codingPaper.findMany(busca);
+
+  if(result.length <= 0 ){
+    console.log("registros não encontrados");
+  }
+  res.json(result)
+  
 })
 
 
@@ -135,15 +323,13 @@ try{
       author
     }
   })
-
   res.json(result)
 }catch (e){
-  
+  res.json(e)
 }
 
  
 })
-
 
 app.get(`/codingpaper/:id`, async (req, res) => {
   const { id }: { id?: string } = req.params
